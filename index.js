@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride());
 
 var api = require('./API/api.js');
-app.use('/api', api)
+app.use('/api/', api)
 
 
 // listen (start app with node server.js) ======================================

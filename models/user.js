@@ -1,14 +1,14 @@
 console.log('Hello from user.js');
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
-var SALT_WORK_FACTOR = 15;
+var SALT_WORK_FACTOR = 10;
 
 var userSchema = new mongoose.Schema({
   email: {type: String, unique: true, required: true},
-  firstName: {type: String, required: true},
-  lastName: {type: String, required: true},
-  phone: {type: String, required: true},
+  navn: {type: String, required: true},
+  telefon: {type: String, required: true},
   pass: {type: String, required: true},
+  admin: {type: Boolean},
   added: { type: Date, default: Date.now },
   edited: { type: Date, default: Date.now }
 }, {collection: 'users'});
@@ -17,7 +17,7 @@ userSchema.pre('save', function(next) {
   var user = this;
 
   // Check if pass is modified or new
-  if (this.isModiFied('pass') || this.isNew) {
+  if (this.isModified('pass') || this.isNew) {
     // Generate a salt
     bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
       if (err) return next(err);
