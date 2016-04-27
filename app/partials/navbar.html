@@ -1,0 +1,12 @@
+<header ng-controller="navCtrl">
+    <nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#/">Hjem</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right" ng-repeat="page in pages">
+            <li><a href="{{page.url}}"><i class="fa fa-home"></i>{{page.name}}</a></li>
+        </ul>
+    </div>
+    </nav>
+</header>

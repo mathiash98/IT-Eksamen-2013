@@ -1,0 +1,25 @@
+{
+  "name": "it_eksamen_2013",
+  "version": "1.0.0",
+  "description": "IT Eksamen 2013",
+  "main": "index.js",
+  "author": "Mathias Haugsbø",
+  "license": "MIT",
+  "scripts": {
+    "start": "mongod --dbpath c:/data/db | nodemon index"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.3.0",
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "jwt-simple": "^0.5.0",
+    "kerberos": "0.0.19",
+    "method-override": "^2.3.5",
+    "mongoose": "^4.4.12",
+    "morgan": "^1.7.0",
+    "passport": "^0.3.2",
+    "passport-google": "^0.3.0",
+    "passport-jwt": "^2.0.0",
+    "passport-local": "^1.0.0"
+  }
+}

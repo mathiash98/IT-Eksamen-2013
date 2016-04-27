@@ -1,0 +1,25 @@
+<div class="jumbotron" id="main-jumbo">
+    <h1>Fotball turnering 2013</h1>
+</div>
+<div class="container">
+  <div class="centered">
+    <h2>Mål</h2>
+  </div>
+  <table class="table-striped table-bordered table">
+    <thead>
+        <td>Lag</td>
+        <td>Spiller</td>
+        <td>Tid</td>
+        <td>Dato</td>
+    </thead>
+
+    <tbody>
+      <tr ng-repeat="maal in maal">
+        <td>{{maal._lag.navn}}</td>
+        <td>{{maal.spiller}}</td>
+        <td>{{maal.tid}}</td>
+        <td>{{maal.added}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,23 @@
+<div class="jumbotron" id="main-jumbo">
+    <h1>Fotball turnering 2013</h1>
+</div>
+<div class="container">
+  <div class="centered">
+    <h2>Spillere</h2>
+  </div>
+  <table class="table-striped table-bordered table">
+    <thead>
+        <td>Navn</td>
+        <td>Lag</td>
+        <td>Kort</td>
+    </thead>
+
+    <tbody>
+      <tr ng-repeat="spiller in spiller">
+        <td>{{spiller.navn}}</td>
+        <td>{{spiller._lag.navn}}</td>
+        <td>{{spiller.kort}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

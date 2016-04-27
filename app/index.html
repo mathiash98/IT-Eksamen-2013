@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fotball 2013</title>
+
+    <!--Styles-->
+    <link rel="stylesheet" href="./css/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="./css/style.css" media="screen" title="no title" charset="utf-8">
+
+    <!--Dependecies-->
+    <script src="./scripts/js/angular.min.js" charset="utf-8"></script>
+    <script src="./scripts/js/angular-route.min.js" charset="utf-8"></script>
+
+    <!--Controllers-->
+    <script src="./angular_app.js" charset="utf-8"></script>
+    <script src="./scripts/appCtrls.js" charset="utf-8"></script>
+
+    <!--Other scripts-->
+    <script src="./scripts/js/jquery.min.js" charset="utf-8"></script>
+    <script src="./scripts/js/bootstrap.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div ng-include="'./partials/navbar.html'"></div>
+    <div ng-view></div> <!--Pages will come here-->
+  </body>
+</html>
