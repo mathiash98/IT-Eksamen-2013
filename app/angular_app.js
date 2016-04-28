@@ -34,9 +34,9 @@ myApp.config(['$routeProvider', '$locationProvider',
           templateUrl: 'partials/spillere.html',
           controller: 'spillereCtrl'
         })
-        .when('/maal', {
-          templateUrl: 'partials/maal.html',
-          controller: 'maalCtrl'
+        .when('/hendelser', {
+          templateUrl: 'partials/hendelser.html',
+          controller: 'hendelserCtrl'
         })
         .otherwise({
           redirectTo: '/'

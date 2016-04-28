@@ -8,13 +8,15 @@
   <table class="table-striped table-bordered table">
     <thead>
         <td>Navn</td>
+        <td>Draktnummer</td>
         <td>Lag</td>
         <td>Kort</td>
     </thead>
 
     <tbody>
-      <tr ng-repeat="spiller in spiller">
+      <tr ng-repeat="spiller in spillere">
         <td>{{spiller.navn}}</td>
+        <td>{{spiller.draktNr}}</td>
         <td>{{spiller._lag.navn}}</td>
         <td>{{spiller.kort}}</td>
       </tr>

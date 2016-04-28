@@ -4,6 +4,7 @@ var Lag = require('./lag');
 
 var spillerSchema = new mongoose.Schema({
   navn: String,
+  draktNr: Number,
   _lag: {type: mongoose.Schema.Types.ObjectId, ref: 'Lag'},
   added: { type: Date, default: Date.now },
   edited: { type: Date, default: Date.now }

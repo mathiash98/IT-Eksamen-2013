@@ -9,8 +9,8 @@ var pages = [{
     url: '#/kontakt'
 }, {
 }, {
-    name: 'Mål',
-    url: '#/maal'
+    name: 'Hendelser',
+    url: '#/hendelser'
 }, {
     name: 'Påmelding',
     url: '#/pamelding'
@@ -31,7 +31,11 @@ appCtrls.controller('hjemCtrl', ['$scope', '$http',
 //=============================================================================
 appCtrls.controller('spillereCtrl', ['$scope', '$http',
     function($scope, $http) {
-
+      console.log('Hello from spillereCtrl');
+      $http.get('/api/spillere').success(function (data) {
+        console.log(data);
+        $scope.spillere = data;
+      });
     }
 ]);
 //=============================================================================
@@ -50,13 +54,7 @@ appCtrls.controller('kontaktCtrl', ['$scope', '$http',
     }
 ]);
 //=============================================================================
-appCtrls.controller('spillereCtrl', ['$scope', '$http',
-    function($scope, $http) {
-
-    }
-]);
-//=============================================================================
-appCtrls.controller('maalCtrl', ['$scope', '$http',
+appCtrls.controller('hendelserCtrl', ['$scope', '$http',
     function($scope, $http) {
 
     }
@@ -64,9 +62,9 @@ appCtrls.controller('maalCtrl', ['$scope', '$http',
 //=============================================================================
 appCtrls.controller('pameldingCtrl', ['$scope', '$http',
             function($scope, $http) {
-              $scope.pamelding_spillere = [{navn: 'Kari Nordmann'}, {navn: 'Ola Nordmann'}];
+              $scope.pamelding_spillere = [{navn: 'Kari Nordmann', draktNr: 5}, {navn: 'Ola Nordmann', draktNr: 10}];
               $scope.addPameldingSpiller = function() {
-                $scope.pamelding_spillere.push({navn: ''});
+                $scope.pamelding_spillere.push({navn: '', draktNr: 0});
               }
                 $http.get('/api/liga').success(function(data) {
                     console.log(data);
@@ -84,9 +82,9 @@ appCtrls.controller('pameldingCtrl', ['$scope', '$http',
                     console.log(tmp);
                     var container = $( ".pamelding_container" );
                     $http.post("/api/pamelding", tmp).then(function successCallback(res) {
-                      if (res.data.type === 'error') {
+                      if (res.data.success === false) {
                         container.append('<div class="alert alert-warning fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>'+res.data.data+'</strong></div>');
-                      } else if (res.data.type === 'success') {
+                      } else if (res.data.success === true) {
                         container.append('<div class="alert alert-success fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>'+res.data.data+'</strong></div>');
                       }
                     },
