@@ -7,36 +7,32 @@ myApp.config(['$routeProvider', '$locationProvider',
   function($routeProvider, $locationProvider) {
       $routeProvider
         .when('/', {
-          templateUrl: './partials/hjem.html',
-          controller: 'hjemCtrl'
+          templateUrl: './partials/home.html',
+          controller: 'homeCtrl'
         })
-        .when('/lag', {
-          templateUrl: 'partials/lag.html',
-          controller: 'lagCtrl'
+        .when('/teams', {
+          templateUrl: 'partials/teams.html',
+          controller: 'teamsCtrl'
         })
-        .when('/lag/:lagId', {
-          templateUrl: 'partials/lag-detail.html',
-          controller: 'lagDetailCtrl'
+        .when('/teams/:teamId', {
+          templateUrl: 'partials/team-detail.html',
+          controller: 'teamDetailCtrl'
         })
-        .when('/spillere', {
-          templateUrl: 'partials/spillere.html',
-          controller: 'spillereCtrl'
+        .when('/players', {
+          templateUrl: 'partials/players.html',
+          controller: 'playersCtrl'
         })
-        .when('/kontakt', {
-          templateUrl: 'partials/kontakt.html',
-          controller: 'kontaktCtrl'
+        .when('/contact', {
+          templateUrl: 'partials/contact.html',
+          controller: 'contactCtrl'
         })
-        .when('/pamelding', {
-          templateUrl: 'partials/pamelding.html',
-          controller: 'pameldingCtrl'
+        .when('/registrate', {
+          templateUrl: 'partials/registrate.html',
+          controller: 'registrateCtrl'
         })
-        .when('/spillere', {
-          templateUrl: 'partials/spillere.html',
-          controller: 'spillereCtrl'
-        })
-        .when('/hendelser', {
-          templateUrl: 'partials/hendelser.html',
-          controller: 'hendelserCtrl'
+        .when('/events', {
+          templateUrl: 'partials/events.html',
+          controller: 'eventsCtrl'
         })
         .otherwise({
           redirectTo: '/'

@@ -1,12 +1,40 @@
 <header ng-controller="navCtrl">
     <nav class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#/">Hjem</a>
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#/">Hjem</a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right" ng-repeat="page in pages">
+                <li>
+                    <a href="{{page.url}}">
+                        <i class="fa fa-home"></i>{{page.name}}</a>
+                </li>
+            </ul>
+            
+            <ul class="nav navbar-nav navbar-right">
+                <div class="dropdown">
+                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">Login</button>
+                    <ul class="dropdown-menu">
+                        <div id="login" class="span3 well well-large offset4">
+                            <h4>Login</h4>
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <input type="text" ng-model="login_email" placeholder="Email"/>
+                                    <input type="password" ng-model="login_pass" placeholder="Passord"/>
+                                    <br/>
+                                    <br/>
+                                    <input class="btn btn-success" type="submit" value="Login"/>
+                                    or
+                                    <button type="button" class="btn btn-default">
+                                        Registrer deg
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </ul>
+                </div>
+            </ul>
         </div>
-        <ul class="nav navbar-nav navbar-right" ng-repeat="page in pages">
-            <li><a href="{{page.url}}"><i class="fa fa-home"></i>{{page.name}}</a></li>
-        </ul>
-    </div>
     </nav>
 </header>

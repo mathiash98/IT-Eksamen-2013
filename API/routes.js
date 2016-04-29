@@ -3,10 +3,7 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 
-var Lag = require('../models/lag');
-var Liga = require('../models/liga');
-var Spiller = require('../models/spiller');
-var Hendelser = require('../models/hendelser');
+var schema = require('../models/schema.js');
 
 require('./auth/jwtStrategy.js')(passport);
 
@@ -16,163 +13,183 @@ router.use(function timeLog(req, res, next) {
     console.log('Time: ', new Date());
     next();
 });
+
 //=============================================================================
 //API---------------------------------------------------
-router.get('/lag', function(req, res) {
-    console.log('Get api lag');
-    Lag.find(function(err, lag) {
-            if (err) {
-                console.log(err);
-                return res.json(err);
-            }
+// Error index:
+// 1: Not admin, 2: .find failed, 3: Not owner, 4: .remove or .save failed, 5: populate failed
 
-        })
-        .populate('_liga')
-        .exec(function(err, lag) {
-            if (err) console.log(err);
-            if (!lag.length) {
-                res.json({success: true, data: 'Ingen lag påmeldt'});
-            } else {
-                console.log(new Date());
-                res.json(lag);
-            }
-            // res.json(lag);
-        });
+// League routes. get is unprotected and returns all leagues, only admin can post and del
+
+router.get('/league/', function (req, res) {
+  schema.League.find(function (err, leagues) {
+    if (err) res.json({err: 2, msg:'Could not find leagues. Err: ' + err});
+    else res.json({err: 0, msg: 'Success', data: leagues});
+  });
 });
+
 //=============================================================================
-router.get('/liga', function(req, res) {
-    Liga.find(function(err, liga) {
-        if (err) {
-            console.log(err);
-            return res.json(err);
-        }
-        console.log(liga);
-        if (!liga.length) {
-            res.json([{
-                success: false, data: "No liga in db"
-            }]);
-        } else {
-            res.json(liga);
-        }
-    });
+router.post('/league/', passport.authenticate('jwt', {session: false}), function (req, res) {
+  if (!req.user.admin) res.json({err: 1, msg: 'Not an admin'});
+  else {
+   var league = new schema.League();
+   league.name = req.body.name;
+   league.save(function (err) {
+     if (err) res.json({err: 4 , msg:'Could not save league. Err: ' + err});
+     else schema.League.find(function (err, leagues) {
+       if (err) res.json({err: 2, msg:'Could not find leagues. Err: ' + err});
+       else res.json({err: 0, msg:'Success', data: leagues});
+     });
+   });
+ }
 });
+
 //=============================================================================
-router.post('/liga', passport.authenticate('jwt', {session: false}), function (req, res) {
-  if (req.user.admin) {
-    // Checks if form is valid
-    if (req.body.navn !== undefined && req.body.navn !== '' && req.body.navn !== ' ') {
-      var tmpLiga = new Liga({
-        navn: req.body.navn
+router.delete('/league/:league_id', passport.authenticate('jwt', {session: false}), function (req, res) {
+  if (!req.user.admin) res.json({err: 1, msg: 'Not an admin'});
+  else {
+    schema.League.remove({_id: req.params.league_id}, function (err, league) {
+      if (err) res.json({err: 4, msg:'Could not remove league. Err: ' + err});
+      else schema.League.find(function (err, leagues) {
+        if (err) res.json({err: 2, msg:'Could not find leagues. Err: ' + err});
+        else res.json({err: 0, msg:'Success', data: leagues});
       });
-      tmpLiga.save(function (err, liga) {
-        if (err) {
-          console.log(err);
-          res.json({err:5, data:'Database error: ' + err});
-        } else {
-          res.json({err:0, data: req.body.navn + ' has blitt lagt til!'})
-        }
-      })
-    } else {
-      res.json({err: 7, data: 'Form is empty'});
-    }
-  } else {
-    res.json({err:2, data: 'You are not authorized to do this'});
+    });
   }
 });
+
 //=============================================================================
-router.post('/pamelding', function(req, res) {
-    console.log('Data: ' + JSON.stringify(req.body));
-    // Check if the data recieved is empty
-    if (!Object.keys(req.body).length) {
-        console.log(req.body);
-        res.json({
-            success: false,
-            data: 'Skjemaet ser ut til å være tomt'
-        });
-    } else {
-        // Checks if the liga actually exists in the liga collection
-        Liga.findOne({
-            _id: req.body._liga
-        }, function(err, liga) {
-            if (err || !liga) {
-                res.json({
-                    err:4,
-                    data: 'Liga ser ut til å være feil, prøv på nytt'
-                });
-            } else {
-              var lagID;
-                // Creates a new Lag which will be saved
-                var tmpLag = new Lag({
-                    navn: req.body.navn,
-                    _liga: req.body._liga,
-                    email: req.body.email,
-                    telefon: req.body.telefon
-                });
+// Team routes: unprotected get returns all teams, post and del is protected
+// myteam provides easy access to just a users teams
 
-                tmpLag.save(function(err, lag) {
-                    if (err) res.send(err);
-                    else {
-                        console.log(lag._id);
-                        lagID = lag._id;
-                        console.log('Successfully inserted lag: ' + req.body.navn);
-                    }
-                    addPlayers();
-                });
-
-                function addPlayers() {
-                  // Loop to loop thorugh the players array and then add each player into spiller collection
-                  for (var i = 0; i < req.body.spillere.length; i++) {
-                    console.log(lagID);
-                    console.log(req.body.spillere[i].navn);
-                    var tmpSpiller = new Spiller({
-                      navn: req.body.spillere[i].navn,
-                      draktNr: req.body.spillere[i].draktNr,
-                      _lag: lagID
-                    });
-
-                    tmpSpiller.save(function(err) {
-                      if (err) {
-                        res.send({
-                          err: 5,
-                          data: 'Database error: ' + err
-                        });
-                      }
-                    })
-                  };
-                }
-
-                res.json({
-                    err: 0,
-                    data: [req.body.navn + ' har blitt meldt på']
-                });
-            }
-        })
-    }
+router.get('/team/', function (req, res) {
+  schema.Team.find().populate('_league')
+  .exec(function (err, teams) {
+    if (err) res.json({err: 2, msg:'Could not find teams. Err: ' + err});
+    else res.json({err: 0, msg:'Success', data: teams});
+  });
 });
+
 //=============================================================================
-router.get('/spillere', function(req, res) {
-  Spiller.find(function (err, spillere) {
+router.post('/team/', passport.authenticate('jwt', {session: false}), function (req, res) {
+  var team = new schema.Team();
+  team.name    = req.body.name;
+  team._leader = req.user._id;
+  team._league = req.body._league;
+
+  team.save(function (err, team) {
     if (err) {
-      console.log(err);
-      return res.json(err);
+      console.log();
+      res.json({err: 4, msg:'Could not save team. Err: ' + err});
     }
-  })
-  .populate('_lag')
-  .exec(function (err, spillere) {
-    if (!spillere.length) {
-      res.json({err:3, data: 'Ingen spillere i databasen'});
-    } else {
-      console.log('Get spillere ' + new Date());
-      res.json(spillere);
+    addPlayers(req.body.players, team._id);
+    schema.Team.find({_leader : req.user._id}).populate('_league')
+    .exec(function (err, teams) {
+      if (err) res.json({err: 2, msg:'Could not find leagues. Err: ' + err});
+      else res.json({err: 0, msg:'Success', data: teams});
+    });
+  });
+});
+
+function addPlayers(arr, _team) {
+  for (var i = 0; i < arr.length; i++) {
+    console.log(arr[i]);
+    var player = new schema.Player({
+      _team: _team,
+      name: arr[i].name,
+      number: arr[i].number
+    });
+    player.save(function (err) {
+      if (err) console.log(err);
+    })
+  }
+}
+//=============================================================================
+router.delete('/team/:team_id', passport.authenticate('jwt', {session: false}), function (req, res) {
+  schema.Team.findOne({ _id: req.params.team_id}, function (err, team) {
+    if (err || !team) res.json({err: 2, msg: 'Could not find team. Err: ' + err});
+    else if (req.user._id.toString() !== team._leader.toString()) res.json({err: 3, msg:'Not your team'});
+    else schema.Team.remove(team, function (err, team) {
+      if (err) res.json({err: 4, msg: 'Could not remove team. Err: ' + err});
+      else schema.Team.find({_leader : req.user._id }).populate('_league')
+      .exec(function (err, teams) {
+        if (err) res.json({err: 2, msg:'Could not find teams. Err: ' + err});
+        else res.json({err: 0, msg:'Success', data: teams});
+      });
+    });
+  });
+});
+
+//=============================================================================
+router.get('/myteam/', passport.authenticate('jwt', {session: false}), function (req, res) {
+  schema.Team.find({_leader : req.user._id}).populate('_league')
+  .exec(function (err, teams) {
+    if (err) res.json({err: 2, msg:'Could not find teams. Err: ' + err});
+    else res.json({err: 0, msg:'Success', data: teams});
+  });
+});
+
+//=============================================================================
+// Player routes: post and del is protected, get takes team param in body and
+// only retuns players of that team, get all is also public
+
+router.post('/player/', passport.authenticate('jwt', {session: false}), function (req, res) {
+  // You can only post if you own the team, so check if  _team._leader matches user._id
+  schema.Team.findOne({ _id: req.body._team }, function (err, team) {
+    if (err || !team) res.json({err: 2, msg: 'Could not find team'});
+    else if (req.user._id.toString() !== team._leader.toString()) res.json({err: 3, msg:'Not your team'});
+    else {
+      var player = new schema.Player();
+      player.name   = req.body.name;
+      player._team  = req.body._team;
+      player.number = req.body.number;
+
+      player.save(function (err) {
+        if (err) res.json({err: 4 , msg:'Could not save player. Err: ' + err});
+        else schema.Player.find({_team : req.body._team}).populate('_team')
+        .exec(function (err, players) {
+          if (err) res.json({err: 2, msg:'Could not find players. Err: ' + err});
+          else res.json({err:0, msg: 'Success', data: players});
+        });
+      });
     }
   });
 });
+
 //=============================================================================
-router.post('/admin', passport.authenticate('jwt', {session: false}), function (req, res) {
-  if (!req.user.admin) res.json({err: 2, data: 'Not admin'});
-  else {
-    res.json(req.user);
-  }
+router.get('/player/:team_id', function (req, res) {
+  schema.Player.find({ _team : req.params.team_id }).populate('_team')
+  .exec(function (err, players) {
+    if (err) res.json({err: 2, msg:'Could not find players. Err: ' + err});
+    else res.json({err:0, msg: 'Success', data: players});
+  });
 });
+
+//=============================================================================
+router.delete('/player/:player_id', passport.authenticate('jwt', {session : false}), function (req, res) {
+  schema.Player.findOne({_id : req.params.player_id}).populate('_team')
+  .exec(function (err, player) {
+    if (err || !player) res.json({err: 2, msg: 'Could not find player. Err: ' + err});
+    else if (player._team._leader.toString() !== req.user._id.toString()) res.json({err: 3, msg:'Not your team'});
+    else schema.Player.remove({_id : req.params.playe_id}, function (err) {
+      if (err) res.json({err: 4, msg: 'Could not remove player. Err: ' + err});
+      else schema.Player.find({_team : player._team }).populate('_team')
+      .exec(function (err, players) {
+        if (err) res.json({err: 2, msg:'Could not find teams. Err: ' + err});
+        else res.json({err: 0, msg:'Success', data: players});
+      });
+    });
+  });
+});
+
+//=============================================================================
+router.get('/player/', function (req, res) {
+  schema.Player.find().populate('_team')
+  .exec(function (err, players) {
+    if (err) res.json({err: 2, msg:'Could not find teams. Err: ' + err});
+    else res.json({err: 0, msg:'Success', data: players});
+  });
+});
+
 
 module.exports = router;

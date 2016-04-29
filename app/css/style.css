@@ -18,6 +18,10 @@
 }
 
 /*=============================Main===================================*/
+#login {
+  margin: 1vw;
+  box-shadow: 0 0 5px #ccc;
+}
 #main-jumbo {
   background: url("../img/kids-football.jpg") bottom no-repeat;
 }
