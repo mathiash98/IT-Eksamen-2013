@@ -4,15 +4,15 @@
 <div class="registrate_container">
     <form class="form-horizontal" role="form">
         <div class="form-group">
-            <label class="control-label col-sm-2" for="registrate_name">name of team</label>
+            <label class="control-label col-sm-2" for="registrate.name">name of team</label>
             <div class="col-sm-10">
-                <input ng-model="registrate_name" type="name" class="form-control" id="registrate_name" placeholder="name på lag">
+                <input ng-model="registrate.name" type="text" class="form-control" id="registrate.name" placeholder="name på lag">
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="registrate_league">league:</label>
+            <label class="control-label col-sm-2" for="registrate._league">league:</label>
             <div class="col-sm-10">
-                <select ng-model="registrate_league" class="form-control" id="registrate_league">
+                <select ng-model="registrate._league" class="form-control" id="registrate._league">
                     <option ng-repeat="league in leagues">{{league.name}}</option>
                 </select>
 
@@ -20,10 +20,10 @@
         </div>
         <div class="form-group">
             <div class="row">
-                <label class="control-label col-sm-2" for="registrate_playere">players:</label>
+                <label class="control-label col-sm-2" for="registrate.players">players:</label>
                 <div class="col-sm-10">
-                    <div class="panel panel-primary col-xs-5" ng-repeat="player in registrate_players">
-
+                  <!-- ============================= -->
+                    <div class="panel panel-primary col-xs-5" ng-repeat="player in registrate.players">
                         <div class="panel-heading">
                             <h3 class="panel-title">{{player.name}}</h3>
                         </div>
@@ -40,9 +40,10 @@
                         </div>
 
                     </div>
+                    <!-- ============================= -->
                 </div>
             </div>
-            <button type="button" class="btn btn-default btn-lg text-center" ng-click="addRegistratePlayer()">
+            <button type="button" class="btn btn-default btn-lg text-center" ng-click="addRegistratePlayer(registrate)">
               <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
               Add player
             </button>

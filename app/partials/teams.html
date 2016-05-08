@@ -2,22 +2,30 @@
     <h1>Fotball turnering 2013</h1>
 </div>
 <div class="container">
-  <div class="centered">
-    <h2>Lag</h2>
-  </div>
-  <table class="table-striped table-bordered table">
-    <thead>
-        <td>Name</td>
-        <td>League</td>
-        <td>Spillere</td>
-    </thead>
+    <div class="centered">
+        <h2>Lag</h2>
+    </div>
+    <table class="table-striped table-bordered table">
+        <thead>
+            <td>Name</td>
+            <td>League</td>
+            <td>Spillere</td>
+        </thead>
 
-    <tbody>
-      <tr ng-repeat="team in teams">
-        <td>{{team.name}}</td>
-        <td>{{team._league.name}}</td>
-        <td><p ng-repeat="player in players">{{player.name}}</p></td>
-      </tr>
-    </tbody>
-  </table>
+        <tbody>
+            <tr ng-repeat="team in teams">
+                <td>{{team.name}}</td>
+                <td>{{team._league.name}}</td>
+                <td>
+                    <p ng-repeat="player in players">{{player.name}}</p>
+                </td>
+
+                <td>
+                  <button type="button" ng-click="removeTeam(team)" class="btn btn-default" aria-label="Remove">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                  </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>

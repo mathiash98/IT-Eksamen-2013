@@ -1,8 +1,8 @@
+console.log('Hello from schema.js');
 var mongoose  = require('mongoose'),
     Schema    = mongoose.Schema
 ;
 
-console.log('schema.js loaded');
 
 module.exports.Event = mongoose.model('Event', new Schema({
   _match: {

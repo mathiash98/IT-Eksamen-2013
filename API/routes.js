@@ -77,9 +77,9 @@ router.post('/team/', passport.authenticate('jwt', {session: false}), function (
   team._leader = req.user._id;
   team._league = req.body._league;
 
+  console.log(req.body);
   team.save(function (err, team) {
     if (err) {
-      console.log();
       res.json({err: 4, msg:'Could not save team. Err: ' + err});
     }
     addPlayers(req.body.players, team._id);
