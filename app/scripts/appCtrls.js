@@ -15,11 +15,34 @@ var pages = [{
     name: 'Registration',
     url: '#/registrate'
 }];
-
+var config = {
+  headers: {
+    Authorization: localStorage.accessToken
+  }
+}
 var appCtrls = angular.module('appCtrls', []);
-appCtrls.controller('navCtrl', ['$scope',
-    function($scope) {
+appCtrls.controller('navCtrl', ['$scope', '$http',
+    function($scope, $http) {
         $scope.pages = pages;
+        $scope.accessToken = localStorage.accessToken;
+        console.log($scope.accessToken);
+
+        $scope.login = function (login_details) {
+          $http.post('/api/auth/login', login_details).success(function (res) {
+            console.log(res.token);
+            if (res.err) {
+              console.log('Error:', res);
+            } else {
+              localStorage.accessToken = res.token;
+              $scope.accessToken = localStorage.accessToken;
+            }
+          });
+        }
+
+        $scope.logout = function () {
+          localStorage.removeItem('accessToken');
+          $scope.accessToken = localStorage.accessToken;
+        }
     }
 ]);
 
@@ -32,28 +55,58 @@ appCtrls.controller('hjemCtrl', ['$scope', '$http',
 appCtrls.controller('playersCtrl', ['$scope', '$http',
     function($scope, $http) {
       console.log('Hello from playersCtrl');
-      $http.get('/api/player').success(function (data) {
-        console.log(data);
-        $scope.players = data;
+      $http.get('/api/player').success(function (res) {
+        console.log(res);
+        $scope.players = res.data;
       });
+      $scope.removePlayer = function (player) {
+        var container = $( ".players_container" );
+
+        console.log('Deleting:', player);
+
+        $http.delete("/api/player/" + player._id, config)
+        .success(function (res) {
+          console.log(res);
+          if (res.err) {
+            container.append('<div class="alert alert-warning fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>'+res.msg+'</strong></div>');
+          } else if (res.err == 0) {
+            container.append('<div class="alert alert-success fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>'+res.msg+'</strong></div>');
+            $scope.players = res.data
+          }
+        })
+        .error(function () {
+          container.append('<div class="alert alert-warning fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>There was an error, you are most propably not authorized to do this action.</strong></div>');
+        })
+      }
     }
 ]);
 //=============================================================================
 appCtrls.controller('teamsCtrl', ['$scope', '$http',
     function($scope, $http) {
-        $http.get("/api/team").success(function(data) {
-            console.log(data.data);
-            $scope.teams = data.data;
+        $http.get("/api/team").success(function(res) {
+            console.log(res.data);
+            $scope.teams = res.data;
         });
 
-        var config = {
-          headers: {
-            Authorization: "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NzIzYzRjYTlhNGY1ODNjMTRjMDk4MTIiLCJuYW1lIjoiTWF0aGlhcyIsImFkbWluIjp0cnVlfQ.S9FIplzVio_N8Uw-iyvsn3tg8zDpXYUqQjcLnL_abJQ"
-          }
-        }
+
         $scope.removeTeam = function (team) {
+          var container = $( ".teams_container" );
+
           console.log('Deleting:', team);
-          $http.delete("/api/team/" + team._id)
+
+          $http.delete("/api/team/" + team._id, config)
+          .success(function (res) {
+            console.log(res);
+            if (res.err) {
+              container.append('<div class="alert alert-warning fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>'+res.msg+'</strong></div>');
+            } else if (res.err == 0) {
+              container.append('<div class="alert alert-success fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>'+res.msg+'</strong></div>');
+              $scope.teams = res.data
+            }
+          })
+          .error(function () {
+            container.append('<div class="alert alert-warning fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>There was an error, you are most propably not authorized to do this action.</strong></div>');
+          })
         }
     }
 ]);
@@ -87,15 +140,10 @@ appCtrls.controller('registrateCtrl', ['$scope', '$http',
                     console.log(val);
                     val._league = find_idByVal(val._league)
                     var container = $( ".registrate_container" );
-                    var config = {
-                      headers: {
-                        Authorization: "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NzIzYzRjYTlhNGY1ODNjMTRjMDk4MTIiLCJuYW1lIjoiTWF0aGlhcyIsImFkbWluIjpmYWxzZX0.lMWjJYNIsyz86bQWf-4G6alAFDQ2KUbRY_zXejqZ5ME"
-                      }
-                    }
                     $http.post("/api/team", val, config).then(function successCallback(res) {
                       console.log(res);
                       if (res.data.err) {
-                        container.append('<div class="alert alert-warning fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>'+res.data.msg+'</strong></div>');
+                        container.append('<div class="alert alert-error fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>'+res.data.msg+'</strong></div>');
                       } else if (res.data.err == 0) {
                         container.append('<div class="alert alert-success fade in"><a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>'+res.data.msg+'</strong></div>');
                       }

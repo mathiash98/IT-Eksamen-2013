@@ -11,29 +11,31 @@
                         <i class="fa fa-home"></i>{{page.name}}</a>
                 </li>
             </ul>
-            
-            <ul class="nav navbar-nav navbar-right">
-                <div class="dropdown">
+
+            <ul class="nav navbar-nav">
+
+                <div ng-show="accessToken == undefined" class="dropdown">
                     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">Login</button>
                     <ul class="dropdown-menu">
                         <div id="login" class="span3 well well-large offset4">
                             <h4>Login</h4>
                             <form class="form-horizontal">
                                 <div class="form-group">
-                                    <input type="text" ng-model="login_email" placeholder="Email"/>
-                                    <input type="password" ng-model="login_pass" placeholder="Passord"/>
+                                    <input type="text" ng-model="login_details.email" placeholder="Email"/>
+                                    <input type="password" ng-model="login_details.pass" placeholder="Passord"/>
                                     <br/>
                                     <br/>
-                                    <input class="btn btn-success" type="submit" value="Login"/>
+                                    <input class="btn btn-success" ng-click="login(login_details)" value="Login"/>
                                     or
-                                    <button type="button" class="btn btn-default">
-                                        Registrer deg
-                                    </button>
+                                    <button type="button" class="btn btn-default">Registrate</button>
                                 </div>
                             </form>
                         </div>
                     </ul>
                 </div>
+
+                <button ng-show="accessToken" type="button" class="btn btn-default5" ng-click="logout()">Logout</button>
+
             </ul>
         </div>
     </nav>

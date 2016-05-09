@@ -1,24 +1,28 @@
 <div class="jumbotron" id="main-jumbo">
     <h1>Fotball turnering 2013</h1>
 </div>
-<div class="container">
+<div class="players_container">
   <div class="centered">
-    <h2>Spillere</h2>
+    <h2>players</h2>
   </div>
   <table class="table-striped table-bordered table">
     <thead>
-        <td>Navn</td>
-        <td>Draktnummer</td>
-        <td>Lag</td>
-        <td>Kort</td>
+        <td>Name</td>
+        <td>Team</td>
+        <td>Number</td>
+        <td></td>
     </thead>
 
     <tbody>
-      <tr ng-repeat="spiller in spillere">
-        <td>{{spiller.navn}}</td>
-        <td>{{spiller.draktNr}}</td>
-        <td>{{spiller._lag.navn}}</td>
-        <td>{{spiller.kort}}</td>
+      <tr ng-repeat="player in players">
+        <td>{{player.name}}</td>
+        <td>{{player._team.name}}</td>
+        <td>{{player.number}}</td>
+        <td>
+          <button type="button" ng-click="removePlayer(player)" class="btn btn-default" aria-label="Remove">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
