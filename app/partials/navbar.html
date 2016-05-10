@@ -1,42 +1,49 @@
 <header ng-controller="navCtrl">
-    <nav class="navbar navbar-default">
-        <div class="container">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#/">Hjem</a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
             </div>
 
-            <ul class="nav navbar-nav navbar-right" ng-repeat="page in pages">
-                <li>
-                    <a href="{{page.url}}">
-                        <i class="fa fa-home"></i>{{page.name}}</a>
-                </li>
-            </ul>
+            <div class="collapse navbar-collapse out" id="navbar">
+                <ul class="nav navbar-nav navbar-right" ng-repeat="page in pages">
+                    <li>
+                        <a href="{{page.url}}">
+                            <i class="fa fa-home"></i>{{page.name}}</a>
+                    </li>
+                </ul>
 
-            <ul class="nav navbar-nav">
+                <ul class="navbar-nav navbar-right">
 
-                <div ng-show="accessToken == undefined" class="dropdown">
-                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">Login</button>
-                    <ul class="dropdown-menu">
-                        <div id="login" class="span3 well well-large offset4">
-                            <h4>Login</h4>
-                            <form class="form-horizontal">
-                                <div class="form-group">
-                                    <input type="text" ng-model="login_details.email" placeholder="Email"/>
-                                    <input type="password" ng-model="login_details.pass" placeholder="Passord"/>
-                                    <br/>
-                                    <br/>
-                                    <input class="btn btn-success" ng-click="login(login_details)" value="Login"/>
-                                    or
-                                    <button type="button" class="btn btn-default">Registrate</button>
-                                </div>
-                            </form>
-                        </div>
-                    </ul>
-                </div>
+                    <div ng-show="accessToken == undefined" class="dropdown">
+                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">Login</button>
+                        <ul class="dropdown-menu">
+                            <div id="login" class="span3 well well-large offset4">
+                                <h4>Login</h4>
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <input type="text" ng-model="login_details.email" placeholder="Email"/>
+                                        <input type="password" ng-model="login_details.pass" placeholder="Passord"/>
+                                        <br/>
+                                        <br/>
+                                        <input class="btn btn-success" ng-click="login(login_details)" value="Login"/>
+                                        or
+                                        <button type="button" class="btn btn-default">Registrate</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </ul>
+                    </div>
 
-                <button ng-show="accessToken" type="button" class="btn btn-default5" ng-click="logout()">Logout</button>
+                    <button ng-show="accessToken" type="button" class="btn btn-default5" ng-click="logout()">Logout</button>
 
-            </ul>
+                </ul>
+            </div>
         </div>
     </nav>
 </header>
